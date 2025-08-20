@@ -1,283 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ShopLite • E‑commerce Demo</title>
-  <meta name="description" content="A clean single-page e‑commerce demo with product details and reviews." />
+  <meta charset="UTF-8">
+  <title>Mini E-Commerce Store</title>
   <style>
-    :root{
-      --bg:#0f1220;            /* deep navy */
-      --card:#151932;          /* card surface */
-      --muted:#8e95b3;         /* muted text */
-      --text:#f5f7ff;          /* primary text */
-      --accent:#6aa1ff;        /* brand accent */
-      --accent-2:#6effc9;      /* secondary accent */
-      --ring: rgba(106,161,255,.5);
-      --shadow: 0 10px 20px rgba(0,0,0,.35), 0 6px 12px rgba(0,0,0,.25);
-      --radius: 16px;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-      margin:0; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
-      color:var(--text); background:linear-gradient(180deg, #0f1220 0%, #0b0f1c 100%);
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    .product {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
     }
-    a{ color: inherit; text-decoration: none; }
-    img{ max-width:100%; display:block; border-radius: calc(var(--radius) - 6px); }
-    .container{ width: min(1200px, 92%); margin: 0 auto; }
-
-    /* Header */
-    header{ position: sticky; top:0; z-index:50; background: rgba(15,18,32,.6); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,.05); }
-    .nav{ display:flex; align-items:center; gap:16px; padding:14px 0; }
-    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.4px; }
-    .logo{ width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow); }
-    .spacer{ flex:1; }
-    .search{ position:relative; flex:1; max-width:520px; }
-    .search input{ width:100%; padding:12px 44px 12px 14px; border-radius: 999px; border:1px solid rgba(255,255,255,.08); background:#0e1429; color:var(--text); outline:none; }
-    .search input:focus{ border-color: var(--ring); box-shadow: 0 0 0 4px rgba(106,161,255,.15); }
-    .search .icon{ position:absolute; right:12px; top:50%; transform:translateY(-50%); opacity:.75; }
-    .cart{ display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, #1a2142, #1b254a); padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.08); cursor:pointer; }
-    .badge{ min-width:22px; height:22px; padding:0 6px; border-radius:999px; display:grid; place-items:center; background:var(--accent); color:#081226; font-weight:700; }
-
-    /* Hero */
-    .hero{ display:grid; grid-template-columns: 1.15fr .85fr; gap:28px; align-items:center; padding:28px 0 14px; }
-    .hero .card{ background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius: var(--radius); box-shadow: var(--shadow); padding:24px; }
-    .eyebrow{ color: var(--muted); text-transform: uppercase; letter-spacing: .18em; font-size:12px; }
-    h1{ margin:.2rem 0 .6rem; font-size: clamp(28px, 3.8vw, 44px); line-height:1.15; }
-    .lead{ color: #dbe3ff; max-width: 60ch; }
-    .cta{ margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; }
-    .btn{ border:0; padding:12px 18px; border-radius:12px; font-weight:700; cursor:pointer; }
-    .btn.primary{ background: linear-gradient(135deg, var(--accent), #8bb6ff); color:#091225; box-shadow: var(--shadow); }
-    .btn.ghost{ background: rgba(255,255,255,.06); color:var(--text); border:1px solid rgba(255,255,255,.1); }
-
-    /* Product Section */
-    .section{ margin: 36px 0; }
-    .section h2{ margin:0 0 14px; font-size: clamp(22px, 3vw, 28px); }
-    .grid{ display:grid; gap:18px; grid-template-columns: repeat(12, 1fr); }
-    .card{ background: var(--card); border:1px solid rgba(255,255,255,.08); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; }
-    .product-card{ grid-column: span 4; display:flex; flex-direction:column; }
-    .product-body{ padding:16px; display:flex; flex-direction:column; gap:8px; }
-    .price{ font-size:18px; font-weight:800; color: var(--accent-2); }
-    .meta{ color: var(--muted); font-size: 14px; }
-    .actions{ display:flex; gap:10px; margin-top:8px; }
-    .pill{ padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); font-size:14px; }
-
-    /* Details + Features */
-    .details{ display:grid; grid-template-columns: 1.1fr .9fr; gap:20px; }
-    .details ul{ margin:0; padding-left: 18px; }
-    .details li{ margin: 6px 0; }
-
-    /* Reviews */
-    .reviews{ display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
-    .review{ padding:16px; }
-    .stars{ letter-spacing: 2px; }
-
-    /* Footer */
-    footer{ margin: 40px 0 26px; color: var(--muted); font-size:14px; text-align:center; }
-
-    /* Responsive */
-    @media (max-width: 980px){
-      .hero{ grid-template-columns: 1fr; }
-      .details{ grid-template-columns: 1fr; }
-      .reviews{ grid-template-columns: 1fr 1fr; }
-      .product-card{ grid-column: span 6; }
+    .product h2 {
+      margin-top: 0;
     }
-    @media (max-width: 640px){
-      .reviews{ grid-template-columns: 1fr; }
-      .product-card{ grid-column: span 12; }
+    .price {
+      color: green;
+      font-weight: bold;
+    }
+    .reviews {
+      margin-top: 15px;
+      padding-left: 10px;
+    }
+    .review {
+      margin-bottom: 10px;
+      border-left: 3px solid #ccc;
+      padding-left: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="container nav" role="navigation" aria-label="main">
-      <div class="brand" aria-label="ShopLite home">
-        <div class="logo" aria-hidden="true"></div>
-        <span>ShopLite</span>
+
+  <h1>🛒 Welcome to TrendyCart</h1>
+
+  <div class="product">
+    <h2>Bluetooth Speaker</h2>
+    <p class="price">₹1,299</p>
+    <p>Compact and powerful speaker with deep bass and 10-hour battery life.</p>
+
+    <div class="reviews">
+      <h3>Customer Reviews:</h3>
+      <div class="review">
+        <strong>Aarav:</strong> Amazing sound quality for the price!
       </div>
-      <div class="spacer"></div>
-      <div class="search">
-        <input type="search" placeholder="Search products…" aria-label="Search products" />
-        <span class="icon" aria-hidden>⌕</span>
+      <div class="review">
+        <strong>Isha:</strong> Battery lasts long and it's super portable.
       </div>
-      <button class="cart" id="cartBtn" aria-label="Open cart">
-        <span>Cart</span>
-        <span class="badge" id="cartCount" aria-live="polite">0</span>
-      </button>
     </div>
-  </header>
+  </div>
 
-  <main class="container">
-    <!-- Hero / Featured Product -->
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="card">
-        <span class="eyebrow">Just In</span>
-        <h1 id="hero-title">Aurora Wireless Headphones</h1>
-        <p class="lead">Immersive sound, 40‑hour battery, and ultra‑soft memory foam. Crafted with recycled aluminum and available in Midnight, Mist, and Sage.</p>
-        <div class="cta">
-          <button class="btn primary" data-add>Buy for $129</button>
-          <button class="btn ghost" onclick="document.getElementById('details').scrollIntoView({behavior:'smooth'})">See details</button>
-        </div>
+  <div class="product">
+    <h2>Fitness Tracker</h2>
+    <p class="price">₹2,499</p>
+    <p>Track your steps, heart rate, and sleep with this sleek wearable.</p>
+
+    <div class="reviews">
+      <h3>Customer Reviews:</h3>
+      <div class="review">
+        <strong>Rohan:</strong> Very accurate and comfortable to wear.
       </div>
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1518443800931-5f4807fcd0b4?q=80&w=1200&auto=format&fit=crop" alt="Aurora wireless headphones on a desk" />
+      <div class="review">
+        <strong>Meera:</strong> Great value and stylish design.
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- Details & Features -->
-    <section id="details" class="section details" aria-labelledby="details-title">
-      <div class="card" style="padding:20px;">
-        <h2 id="details-title">Product Details</h2>
-        <p>Experience studio‑grade audio with graphene drivers, Bluetooth 5.3 multipoint, and hybrid active noise cancellation. Fast‑charge gives 6 hours of playback in 10 minutes.</p>
-        <div class="pill" aria-label="Price">Price: <strong>$129</strong></div>
-        <div class="actions">
-          <button class="btn primary" data-add>Add to Cart</button>
-          <button class="btn ghost">Add to Wishlist</button>
-        </div>
-      </div>
-      <div class="card" style="padding:20px;">
-        <h2>Key Features</h2>
-        <ul>
-          <li>Hybrid ANC with transparency mode</li>
-          <li>40‑hour battery • USB‑C fast charge</li>
-          <li>Bluetooth 5.3 with multipoint</li>
-          <li>Memory‑foam ear cushions</li>
-          <li>Fold‑flat travel case included</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Product Grid -->
-    <section class="section" aria-labelledby="grid-title">
-      <h2 id="grid-title">You may also like</h2>
-      <div class="grid">
-        <!-- Six sample products -->
-        <article class="card product-card" aria-labelledby="p1-title">
-          <img src="https://images.unsplash.com/photo-1585386959984-a41552231658?q=80&w=1200&auto=format&fit=crop" alt="Compact Bluetooth speaker" />
-          <div class="product-body">
-            <h3 id="p1-title">Pulse Mini Speaker</h3>
-            <div class="meta">Water‑resistant • BT 5.3</div>
-            <div class="price">$39</div>
-            <div class="actions">
-              <button class="btn primary" data-add>Add</button>
-              <button class="btn ghost">Details</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="card product-card" aria-labelledby="p2-title">
-          <img src="https://images.unsplash.com/photo-1517059224940-d4af9eec41e5?q=80&w=1200&auto=format&fit=crop" alt="Sleek wireless mouse" />
-          <div class="product-body">
-            <h3 id="p2-title">Glide Wireless Mouse</h3>
-            <div class="meta">Quiet click • 2 devices</div>
-            <div class="price">$24</div>
-            <div class="actions">
-              <button class="btn primary" data-add>Add</button>
-              <button class="btn ghost">Details</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="card product-card" aria-labelledby="p3-title">
-          <img src="https://images.unsplash.com/photo-1512499617640-c2f999098c4b?q=80&w=1200&auto=format&fit=crop" alt="Mechanical keyboard with RGB" />
-          <div class="product-body">
-            <h3 id="p3-title">Nova Mechanical Keyboard</h3>
-            <div class="meta">Hot‑swap • RGB</div>
-            <div class="price">$89</div>
-            <div class="actions">
-              <button class="btn primary" data-add>Add</button>
-              <button class="btn ghost">Details</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="card product-card" aria-labelledby="p4-title">
-          <img src="https://images.unsplash.com/photo-1491933382434-500287f9b54b?q=80&w=1200&auto=format&fit=crop" alt="Smartwatch with strap" />
-          <div class="product-body">
-            <h3 id="p4-title">Tempo Smartwatch</h3>
-            <div class="meta">GPS • 5 ATM</div>
-            <div class="price">$149</div>
-            <div class="actions">
-              <button class="btn primary" data-add>Add</button>
-              <button class="btn ghost">Details</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="card product-card" aria-labelledby="p5-title">
-          <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" alt="Wireless earbuds" />
-          <div class="product-body">
-            <h3 id="p5-title">Aero True Wireless</h3>
-            <div class="meta">ANC • Qi charge</div>
-            <div class="price">$79</div>
-            <div class="actions">
-              <button class="btn primary" data-add>Add</button>
-              <button class="btn ghost">Details</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="card product-card" aria-labelledby="p6-title">
-          <img src="https://images.unsplash.com/photo-1517059224940-d4af9eec41e5?q=80&w=1200&auto=format&fit=crop" alt="Slim laptop sleeve" />
-          <div class="product-body">
-            <h3 id="p6-title">Slate Laptop Sleeve</h3>
-            <div class="meta">13–14" • Recycled felt</div>
-            <div class="price">$29</div>
-            <div class="actions">
-              <button class="btn primary" data-add>Add</button>
-              <button class="btn ghost">Details</button>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- Reviews -->
-    <section class="section" aria-labelledby="reviews-title">
-      <h2 id="reviews-title">Customer Reviews</h2>
-      <div class="grid reviews">
-        <article class="card review" aria-label="Review by Priya">
-          <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-          <p><strong>Priya N.</strong></p>
-          <p>Fantastic sound and the cushions are incredibly comfy. Used for flights—ANC is great!</p>
-        </article>
-        <article class="card review" aria-label="Review by Arjun">
-          <div class="stars" aria-label="4 out of 5 stars">★★★★☆</div>
-          <p><strong>Arjun R.</strong></p>
-          <p>Battery life is as advertised. Would love a companion app for EQ presets.</p>
-        </article>
-        <article class="card review" aria-label="Review by Sarah">
-          <div class="stars" aria-label="4 out of 5 stars">★★★★☆</div>
-          <p><strong>Sarah L.</strong></p>
-          <p>Build quality feels premium. Multipoint works flawlessly between laptop and phone.</p>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">© <span id="year"></span> ShopLite • Demo page for educational purposes.</div>
-  </footer>
-
-  <script>
-    // Tiny cart counter demo
-    const countEl = document.getElementById('cartCount');
-    const addButtons = document.querySelectorAll('[data-add]');
-    let count = 0;
-    addButtons.forEach(btn => btn.addEventListener('click', () => {
-      count += 1; countEl.textContent = String(count);
-      btn.animate([
-        { transform:'translateY(0)' },
-        { transform:'translateY(-4px)' },
-        { transform:'translateY(0)' }
-      ], { duration: 260, easing: 'cubic-bezier(.2,.7,.2,1)' });
-    }));
-
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
